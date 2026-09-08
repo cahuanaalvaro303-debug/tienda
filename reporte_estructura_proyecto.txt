@@ -1,0 +1,128 @@
+REPORTE DE ESTRUCTURA DEL PROYECTO
+==================================
+
+Proyecto: tienda-api
+Fecha del reporte: 2026-09-07
+
+VERSION DE LARAVEL
+------------------
+Laravel Framework: 12.69.1
+Restriccion declarada en composer.json: ^12.0
+PHP requerido: ^8.2
+
+ESTRUCTURA DEL PROYECTO
+-----------------------
+
+tienda-api/
+|-- app/
+|   |-- Http/
+|   |   `-- Controllers/
+|   |       `-- Controller.php
+|   |-- Models/
+|   |   `-- User.php
+|   `-- Providers/
+|       `-- AppServiceProvider.php
+|-- bootstrap/
+|   |-- app.php
+|   |-- providers.php
+|   `-- cache/
+|       |-- .gitignore
+|       |-- packages.php
+|       `-- services.php
+|-- config/
+|   |-- app.php
+|   |-- auth.php
+|   |-- cache.php
+|   |-- database.php
+|   |-- filesystems.php
+|   |-- logging.php
+|   |-- mail.php
+|   |-- queue.php
+|   |-- services.php
+|   `-- session.php
+|-- database/
+|   |-- .gitignore
+|   |-- database.sqlite
+|   |-- factories/
+|   |   `-- UserFactory.php
+|   |-- migrations/
+|   |   |-- 0001_01_01_000000_create_users_table.php
+|   |   |-- 0001_01_01_000001_create_cache_table.php
+|   |   `-- 0001_01_01_000002_create_jobs_table.php
+|   `-- seeders/
+|       `-- DatabaseSeeder.php
+|-- public/
+|   |-- .htaccess
+|   |-- favicon.ico
+|   |-- index.php
+|   `-- robots.txt
+|-- resources/
+|   |-- css/
+|   |   `-- app.css
+|   |-- js/
+|   |   |-- app.js
+|   |   `-- bootstrap.js
+|   `-- views/
+|       `-- welcome.blade.php
+|-- routes/
+|   |-- console.php
+|   `-- web.php
+|-- storage/
+|   |-- app/
+|   |   |-- .gitignore
+|   |   |-- private/
+|   |   |   `-- .gitignore
+|   |   `-- public/
+|   |       `-- .gitignore
+|   |-- framework/
+|   |   |-- cache/
+|   |   |-- sessions/
+|   |   |-- testing/
+|   |   `-- views/
+|   `-- logs/
+|-- tests/
+|   |-- TestCase.php
+|   |-- Feature/
+|   |   `-- ExampleTest.php
+|   `-- Unit/
+|       `-- ExampleTest.php
+|-- .editorconfig
+|-- .env
+|-- .env.example
+|-- .gitattributes
+|-- .gitignore
+|-- artisan
+|-- composer.json
+|-- composer.lock
+|-- package.json
+|-- phpunit.xml
+|-- README.md
+|-- vite.config.js
+`-- vendor/
+    `-- Dependencias PHP instaladas por Composer
+
+DESCRIPCION DE DIRECTORIOS PRINCIPALES
+--------------------------------------
+app/       Codigo principal de la aplicacion: controladores, modelos y proveedores.
+bootstrap/ Inicializacion de Laravel y archivos de cache generados.
+config/    Archivos de configuracion de la aplicacion.
+database/  Base SQLite, migraciones, factories y seeders.
+public/    Punto de entrada web y recursos publicos.
+resources/ CSS, JavaScript y vistas Blade.
+routes/    Definiciones de rutas web y de consola.
+storage/   Archivos generados, cache, sesiones, vistas compiladas y logs.
+tests/     Pruebas automatizadas de tipo Feature y Unit.
+vendor/    Dependencias instaladas por Composer; no se desglosa individualmente.
+
+DEPENDENCIAS PRINCIPALES DECLARADAS
+-----------------------------------
+laravel/framework: ^12.0
+laravel/tinker: ^2.10.1
+
+DEPENDENCIAS DE DESARROLLO PRINCIPALES
+--------------------------------------
+fakerphp/faker: ^1.23
+laravel/pail: ^1.2.2
+laravel/pint: ^1.24
+laravel/sail: ^1.41
+phpunit/phpunit: ^11.5.50
