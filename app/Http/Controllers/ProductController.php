@@ -9,7 +9,9 @@ class ProductController extends Controller
     //
     public function index() {
 
-        $products = Product::all();
+        //$products = Product::all();
+
+        $products = Product::with('category')->get();
         return response()->json($products);
 
     }
@@ -37,13 +39,15 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0'
+            'stock' => 'required|integer|min:0',
+            'category_id' => 'required|exists:categories,id'
         ]);
 
         $product = Product::create([
             'name' => $request->name,
             'price' => $request->price,
-            'stock' => $request->stock
+            'stock' => $request->stock,
+            'category_id' => $request->category_id
         ]);
 
         return response()->json($product, 201);
@@ -65,6 +69,8 @@ class ProductController extends Controller
     //SEGUNA FORMA PARA LEER REGISTRO EN ESPECIFICO
     public function show($id) {
         $product = Product::findOrFail($id);
+
+        $product->load('category');
 
         return response()->json($product);
     }
@@ -96,7 +102,7 @@ class ProductController extends Controller
 
     //SEGUNDA FORMA PARA ACTUALIZAR O MODIFICAR DATOS 
 
-    public function update($id, Request $request){
+    /*public function update($id, Request $request){
         $product = Product::finfOrFail($id);
 
         $request->validate([
@@ -113,6 +119,27 @@ class ProductController extends Controller
 
         return response()->json($product);
 
+    }*/
+
+    //TERCERA FORMA PARA PODER ACTUALIZAR REGISTROS 
+
+    public function update($id, Request $request) {
+        $product = Product::findOrFail($id);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'category_id' => 'required|exists:categories,id'
+        ]);
+
+        $product->update([
+            'name' => $request->name,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'category_id' => $request->category_id
+        ]);
+
+        return response()->json($product);
     }
 
 
