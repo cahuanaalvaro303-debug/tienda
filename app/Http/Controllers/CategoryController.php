@@ -25,8 +25,13 @@ class CategoryController extends Controller
         return response()->json($category, 201);
     }
 
-    public function show($id){
+    /*public function show($id){
         $category = Category::with('products')->findOrFail($id);
+        return response()->json($category);
+    }*/
+
+    public function show(Category $category){
+        $category -> load('products');
         return response()->json($category);
     }
 

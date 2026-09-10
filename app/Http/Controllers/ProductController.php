@@ -54,51 +54,48 @@ class ProductController extends Controller
     }
     
     //PRIMERA FORMA PARA LEER UN UNICO REGISTRO 
-   /* public function show($id) {
 
-        $product = Product::find($id);
-
-        if(!$product){
-            return response()->json([
-                'message' => 'Producto no encontrado'
-            ], 404);
-        }
+    /*public function show($id) {
+        $product = Product::findOrFail($id);
         return response()->json($product);
     }*/
 
+   public function show(Product $product) {
+
+        return response()->json($product);
+    }
+
     //SEGUNA FORMA PARA LEER REGISTRO EN ESPECIFICO
-    public function show($id) {
+    /*public function show($id) {
         $product = Product::findOrFail($id);
 
         $product->load('category');
 
         return response()->json($product);
-    }
+    }*/
 
     //PRIMEA FORMA PARA ACTUALIZAR DATOS 
-    /*public function update($id, Request $request) {
+    public function update(Product $product, Request $request) {
         
-        $product = Product::find($id);
-
-        if(!$product) {
-            return response()->json([
-                'message' => 'Producto no encontrado'
-            ], 404);
-        }
-
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0', 
-            'stock' => 'required|integer|min:0'
+            'stock' => 'required|integer|min:0',
+            'category_id' => 'required|exists:categories,id'
         ]);
         
-        $product->name = $request->name;
+        /*$product->name = $request->name;
         $product->price = $request->price;
-        $product->stock = $request->stock;
+        $product->stock = $request->stock;*/
+        $product->update ([
+            'name' => $request->name,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'category_id' => $request->category_id
+        ]);
 
-        $product->save();
         return response()->json($product);
-    }*/
+    }
 
     //SEGUNDA FORMA PARA ACTUALIZAR O MODIFICAR DATOS 
 
@@ -123,7 +120,7 @@ class ProductController extends Controller
 
     //TERCERA FORMA PARA PODER ACTUALIZAR REGISTROS 
 
-    public function update($id, Request $request) {
+    /*public function update($id, Request $request) {
         $product = Product::findOrFail($id);
         $request->validate([
             'name' => 'required|string|max:255',
@@ -140,7 +137,7 @@ class ProductController extends Controller
         ]);
 
         return response()->json($product);
-    }
+    }*/
 
 
     //PRIMERA FORMA PARA ELIMINAR UN REGISTRO
@@ -161,8 +158,7 @@ class ProductController extends Controller
     }*/
 
     //SEGUNDA FORMA PARA ELIMINAR UN REGISTRO
-    public function destroy($id){
-        $product = Product::findOrFail($id);
+    public function destroy(Product $product){
 
         $product->delete();
         return response()->json([
