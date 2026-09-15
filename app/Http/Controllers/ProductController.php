@@ -3,18 +3,64 @@
 namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Request\UpdateProductRequest;
 class ProductController extends Controller
 {
     //
-    public function index() {
+    /*public function index(Request $request){
+        $products = Product::query();
+
+        if($request->search) {
+            $products->where('name', 'like', '%'.$request->search.'%');
+        }
+
+        return response()->json(
+            $products->get()
+        );
+    }*/
+
+    public function index(Request $request){
+        $query = Product::with(['category', 'tags']);
+
+        if($request->search){
+            $query->where(
+                'name', 'like', '%'.$request->search.'%'
+            );
+        }
+
+        if($request->min_price){
+            $query->where(
+                'price', '>=', $request->min_price
+            );
+        }
+
+        if($request->max_price){
+            $query->where(
+                'price', '<=', $request->max_price
+            );
+        }
+
+        if($request->category_id){
+            $query->where(
+                'category_id', $request->category_id
+            );
+        }
+
+        $products = $query->orderBy('id', 'desc')->paginate(10);
+
+        return response()->json($products);
+    }
+
+
+    /*public function index() {
 
         //$products = Product::all();
 
         $products = Product::with('category')->get();
         return response()->json($products);
 
-    }
+    }*/
     //  PRIMERA FORMA  PARA CREAR UN NUEVO REGISTRO
     /*public function store(Request $request) {
         
@@ -35,14 +81,7 @@ class ProductController extends Controller
     }*/
 
     //SEGUNDA FORMA PARA CREAR UN NUEVO REGISTRO
-    public function store(Request $request){
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'category_id' => 'required|exists:categories,id'
-        ]);
-
+    public function store(StoreProductRequest $request){
         $product = Product::create([
             'name' => $request->name,
             'price' => $request->price,
@@ -75,14 +114,8 @@ class ProductController extends Controller
     }*/
 
     //PRIMEA FORMA PARA ACTUALIZAR DATOS 
-    public function update(Product $product, Request $request) {
+    public function update(Product $product, UpdateProductRequest $request) {
         
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0', 
-            'stock' => 'required|integer|min:0',
-            'category_id' => 'required|exists:categories,id'
-        ]);
         
         /*$product->name = $request->name;
         $product->price = $request->price;
@@ -163,6 +196,21 @@ class ProductController extends Controller
         $product->delete();
         return response()->json([
             'message'=> 'Producto eliminado correctamente'
+        ]);
+    }
+
+    public function syncTags(Product $product, Request $request)
+    {
+        $request->validate([
+            'tag_ids' => 'required|array', 
+            'tag_ids.*' => 'integer|exists:tags,id'
+        ]);
+
+        $product->tags()->sync($request->tag_ids);
+
+        return response()->json([
+            'message' => 'Tags actualizados correctamente', 
+            'product' => $product->load('tags')
         ]);
     }
 }
