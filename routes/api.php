@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Models\Product;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\AuthController;
 
 
 
@@ -14,6 +15,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::post('/register', [AuthController::class, 'register']);
+
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/hello', [HelloController::class, 'index']);
 

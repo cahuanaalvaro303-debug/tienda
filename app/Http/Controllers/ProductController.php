@@ -5,9 +5,32 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Request\UpdateProductRequest;
+use App\Http\Resources\ProductResource;
+
+
 class ProductController extends Controller
 {
     //
+
+    /*public function index()
+    {
+        $products = Product::with([
+            'category',
+            'tags',
+        ])->get();
+
+        return ProductResource::collection($products);
+    }*/
+
+   /* public function index(){
+        $products = Product::all();
+        return ProductResource::collection($products);
+    }*/
+
+    //collection es para varios productos, mientras si ponemos sin collection entonces
+    // solo un producto
+
+
     /*public function index(Request $request){
         $products = Product::query();
 
@@ -49,7 +72,11 @@ class ProductController extends Controller
 
         $products = $query->orderBy('id', 'desc')->paginate(10);
 
-        return response()->json($products);
+        return ProductResource::collection($products)
+        ->additional([
+            'success' => true,
+            'message' => 'Productos obtenidos correctamente'
+        ]);
     }
 
 
@@ -89,7 +116,17 @@ class ProductController extends Controller
             'category_id' => $request->category_id
         ]);
 
-        return response()->json($product, 201);
+        $product->load([
+            'category',
+            'tags'
+        ]);
+
+        return (new ProductResource($product))
+            ->additional([
+                'success' => true,
+                'message' => 'Producto creado correctamente'
+            ])
+            -> response()->setStatusCode(201);
     }
     
     //PRIMERA FORMA PARA LEER UN UNICO REGISTRO 
@@ -99,9 +136,22 @@ class ProductController extends Controller
         return response()->json($product);
     }*/
 
-   public function show(Product $product) {
+   /*public function show(Product $product) {
 
         return response()->json($product);
+    }*/
+
+    public function show(Product $product){
+
+        $product->load([
+            'category', 
+            'tags'
+        ]);
+        return (new ProductResource($product))
+            ->additional([
+                'success' => true,
+                'message' => 'Producto obtenido correctamente'
+            ]);
     }
 
     //SEGUNA FORMA PARA LEER REGISTRO EN ESPECIFICO
@@ -127,7 +177,16 @@ class ProductController extends Controller
             'category_id' => $request->category_id
         ]);
 
-        return response()->json($product);
+        $product->load([
+            'category',
+            'tags'
+        ]);
+
+        return (new ProductResource($product))
+            ->additional([
+                'success' => true,
+                'message' => 'Producto actualizado correctamente'
+            ]);
     }
 
     //SEGUNDA FORMA PARA ACTUALIZAR O MODIFICAR DATOS 
@@ -195,6 +254,7 @@ class ProductController extends Controller
 
         $product->delete();
         return response()->json([
+            'success' => true,
             'message'=> 'Producto eliminado correctamente'
         ]);
     }
