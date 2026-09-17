@@ -11,23 +11,45 @@ use App\Http\Controllers\AuthController;
 
 
 
-Route::get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->group(function(){
+
+    Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+    });
+
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+
+    //Productos
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::put('/products/{product}', [ProductController::class, 'update']);
+    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+    Route::put('/products/{product}/tags', [ProductController::class, 'syncTags']);
+
+});
+
+
+Route::middleware(['auth:sanctum', 'role:admin'])->get('/admin-test', function () {
+    return response()->json([
+        'success' => true,
+        'message' => 'Tienes acceso de administrador'
+    ]);
+});
 
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/login', [AuthController::class, 'login']);
 
+
+
 Route::get('/hello', [HelloController::class, 'index']);
+
+
 
 //Products
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
-Route::post('/products', [ProductController::class, 'store']);
-Route::put('/products/{product}', [ProductController::class, 'update']);
-Route::delete('/products/{product}', [ProductController::class, 'destroy']);
-Route::put('/products/{product}/tags', [ProductController::class, 'syncTags']);
+
 
 //Categorias
 Route::get('/categories', [CategoryController::class, 'index']);

@@ -19,7 +19,8 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => $request->password
+            'password' => $request->password,
+            'role' => 'user'
         ]);
 
         $token = $user->createToken('flutter')->plainTextToken;
@@ -30,7 +31,8 @@ class AuthController extends Controller
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
-                'email' => $user->email
+                'email' => $user->email,
+                'role' => $user->role
             ],
             'token' => $token
         ], 201);
@@ -59,11 +61,21 @@ class AuthController extends Controller
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
-                'email' => $user->email
+                'email' => $user->email,
+                'role' => $user->role
             ],
             'token' => $token
         ]);
 
+    }
+
+    public function logout(Request $request){
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Logout correcto'
+        ]);
     }
 
 }
