@@ -8,12 +8,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Auditable
 {
     /** @use HasFactory<UserFactory> */
+    use \OwenIt\Auditing\Auditable;
     use HasApiTokens, HasFactory, Notifiable;
 
+
+    protected $auditInclude = [
+        'name',
+        'email'
+    ];
     /**
      * The attributes that are mass assignable.
      *
